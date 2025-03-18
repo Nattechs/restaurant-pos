@@ -235,7 +235,7 @@ export async function initializeDatabase() {
         { id: "table1", number: "1", capacity: 4, status: "available" },
         { id: "table2", number: "2", capacity: 2, status: "available" },
         { id: "table3", number: "3", capacity: 6, status: "available" },
-        { id: "table4", number: "4", capacity: 4, status: "occupied" },
+        { id: "table4", number: "4", capacity: "4", status: "occupied" },
       ]
 
       // Seed staff

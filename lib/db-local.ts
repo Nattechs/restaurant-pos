@@ -209,7 +209,7 @@ class LocalDatabase {
       { id: "table1", number: "1", capacity: 4, status: "available" },
       { id: "table2", number: "2", capacity: 2, status: "available" },
       { id: "table3", number: "3", capacity: 6, status: "available" },
-      { id: "table4", number: "4", capacity: 4, status: "occupied" }, // Fixed: was string 'occupied'
+      { id: "table4", number: "4", capacity: 4, status: "occupied" },
     ]
 
     // Seed staff
@@ -296,13 +296,10 @@ export const redis = {\
   exists: redisExists
 }
 
-// Local Storage Implementation
-""use client"
-
 import { generateId } from "ai"
 
 // Data structure types
-export type MenuItem = {
+export type MenuItemLS = {
   id: string
   title: string
   description: string
@@ -314,13 +311,13 @@ export type MenuItem = {
   available: boolean
 }
 
-export type Category = {
+export type CategoryLS = {
   id: string
   name: string
   icon: string
 }
 
-export type Order = {
+export type OrderLS = {
   id: string
   tableNumber: string
   customerName?: string
@@ -336,7 +333,7 @@ export type Order = {
   staffId: string
 }
 
-export type OrderItem = {
+export type OrderItemLS = {
   menuItemId: string
   title: string
   price: number
@@ -344,7 +341,7 @@ export type OrderItem = {
   notes?: string
 }
 
-export type Table = {
+export type TableLS = {
   id: string
   number: string
   capacity: number
@@ -352,7 +349,7 @@ export type Table = {
   currentOrderId?: string
 }
 
-export type Staff = {
+export type StaffLS = {
   id: string
   name: string
   email: string
@@ -361,7 +358,7 @@ export type Staff = {
 }
 
 // Default data for initialization
-const defaultCategories: Category[] = [
+const defaultCategories: CategoryLS[] = [
   { id: "cat1", name: "All", icon: "Grid" },
   { id: "cat2", name: "Breakfast", icon: "Coffee" },
   { id: "cat3", name: "Soups", icon: "Soup" },
@@ -370,7 +367,7 @@ const defaultCategories: Category[] = [
   { id: "cat6", name: "Burgers", icon: "Sandwich" },
 ]
 
-const defaultMenuItems: MenuItem[] = [
+const defaultMenuItems: MenuItemLS[] = [
   {
     id: "item1",
     title: "Tasty Vegetable Salad Healthy Diet",
@@ -395,14 +392,14 @@ const defaultMenuItems: MenuItem[] = [
   // Add more items as needed
 ]
 
-const defaultTables: Table[] = [
+const defaultTables: TableLS[] = [
   { id: "table1", number: "1", capacity: 4, status: "available" },
   { id: "table2", number: "2", capacity: 2, status: "available" },
   { id: "table3", number: "3", capacity: 6, status: "available" },
   { id: "table4", number: "4", capacity: 4, status: "occupied" },
 ]
 
-const defaultStaff: Staff[] = [
+const defaultStaff: StaffLS[] = [
   { id: "staff1", name: "Admin User", email: "admin@example.com", role: "admin", pin: "1234" },
   { id: "staff2", name: "Cashier User", email: "cashier@example.com", role: "cashier", pin: "5678" },
 ]
@@ -456,34 +453,34 @@ export function initializeLocalStorage(): void {
 }
 
 // Data access functions
-export function getMenuItems(): MenuItem[] {
-  return getFromLocalStorage<MenuItem[]>("menu:items", [])
+export function getMenuItems(): MenuItemLS[] {
+  return getFromLocalStorage<MenuItemLS[]>("menu:items", [])
 }
 
-export function getCategories(): Category[] {
-  return getFromLocalStorage<Category[]>("menu:categories", [])
+export function getCategories(): CategoryLS[] {
+  return getFromLocalStorage<CategoryLS[]>("menu:categories", [])
 }
 
-export function getOrders(): Order[] {
-  return getFromLocalStorage<Order[]>("orders", [])
+export function getOrders(): OrderLS[] {
+  return getFromLocalStorage<OrderLS[]>("orders", [])
 }
 
-export function getTables(): Table[] {
-  return getFromLocalStorage<Table[]>("tables", [])
+export function getTables(): TableLS[] {
+  return getFromLocalStorage<TableLS[]>("tables", [])
 }
 
-export function getStaff(): Staff[] {
-  return getFromLocalStorage<Staff[]>("staff", [])
+export function getStaff(): StaffLS[] {
+  return getFromLocalStorage<StaffLS[]>("staff", [])
 }
 
 // Data mutation functions
-export function addMenuItem(item: MenuItem): void {
+export function addMenuItem(item: MenuItemLS): void {
   const items = getMenuItems()
   items.push(item)
   setToLocalStorage("menu:items", items)
 }
 
-export function updateMenuItem(id: string, updates: Partial<MenuItem>): void {
+export function updateMenuItem(id: string, updates: Partial<MenuItemLS>): void {
   const items = getMenuItems()
   const index = items.findIndex((item) => item.id === id)
 
@@ -499,7 +496,7 @@ export function deleteMenuItem(id: string): void {
   setToLocalStorage("menu:items", filteredItems)
 }
 
-export function addOrder(order: Order): void {
+export function addOrder(order: OrderLS): void {
   const orders = getOrders()
   orders.push(order)
   setToLocalStorage("orders", orders)
@@ -517,7 +514,7 @@ export function addOrder(order: Order): void {
   }
 }
 
-export function updateOrder(id: string, updates: Partial<Order>): void {
+export function updateOrder(id: string, updates: Partial<OrderLS>): void {
   const orders = getOrders()
   const index = orders.findIndex((order) => order.id === id)
 
@@ -545,7 +542,7 @@ export function createOrder(orderData: {
   items: OrderItem[]
   diningMode: "Dine in" | "Take Away" | "Delivery"
   staffId: string
-}): Order {
+}): OrderLS {
   const { tableNumber, customerName, items, diningMode, staffId } = orderData
 
   // Calculate totals
@@ -553,7 +550,7 @@ export function createOrder(orderData: {
   const tax = subtotal * 0.05 // 5% tax
   const total = subtotal + tax
 
-  const newOrder: Order = {
+  const newOrder: OrderLS = {
     id: generateId(),
     tableNumber,
     customerName,
