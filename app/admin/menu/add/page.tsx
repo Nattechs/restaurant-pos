@@ -7,18 +7,13 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { getCategories } from "@/lib/db"
-import { addMenuItem } from "@/lib/actions"
-import { redirect } from "next/navigation"
+import { getCategories } from "@/lib/db-local"
+
+// Create a separate server action file
+import { createMenuItem } from "@/lib/menu-actions"
 
 export default async function AddMenuItemPage() {
   const categories = await getCategories()
-
-  async function createMenuItem(formData: FormData) {
-    "use server"
-    await addMenuItem(formData)
-    redirect("/admin/menu")
-  }
 
   return (
     <div className="flex h-screen bg-gray-100">
