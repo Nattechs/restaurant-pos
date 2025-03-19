@@ -1,11 +1,14 @@
+"use client"
+
+import { useState, useEffect } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { SidebarNav } from "@/components/sidebar-nav"
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from "recharts"
+import { getMenuItems, getOrders } from "@/lib/local-storage"
 
-export default async function DashboardPage() {
-  // In a real app, fetch this data from the API
-  const salesData = [
+export default function DashboardPage() {
+  const [salesData, setSalesData] = useState([
     { name: "Mon", sales: 1200 },
     { name: "Tue", sales: 1900 },
     { name: "Wed", sales: 1500 },
@@ -13,15 +16,26 @@ export default async function DashboardPage() {
     { name: "Fri", sales: 2800 },
     { name: "Sat", sales: 3500 },
     { name: "Sun", sales: 2100 },
-  ]
-
-  const topItems = [
+  ])
+  
+  const [topItems, setTopItems] = useState([
     { name: "Original Chess Meat Burger", sales: 145, revenue: 3479.55 },
     { name: "Fresh Orange Juice", sales: 132, revenue: 1714.68 },
     { name: "Tasty Vegetable Salad", sales: 98, revenue: 1763.02 },
     { name: "Meat Sushi Maki", sales: 87, revenue: 869.13 },
     { name: "Tacos Salsa With Chicken", sales: 76, revenue: 1139.24 },
-  ]
+  ])
+
+  // You can add real data fetching here if needed
+  useEffect(() => {
+    // Example of how you could calculate real data from localStorage
+    try {
+      const orders = getOrders()
+      // Process orders to generate real sales data if needed
+    } catch (error) {
+      console.error("Error fetching dashboard data:", error)
+    }
+  }, [])
 
   return (
     <div className="flex h-screen bg-gray-100">
@@ -145,4 +159,3 @@ export default async function DashboardPage() {
     </div>
   )
 }
-
