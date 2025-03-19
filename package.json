@@ -59,7 +59,6 @@
     "vaul": "^0.9.6",
     "zod": "^3.24.1",
     "prisma": "latest",
-    "@upstash/redis": "latest",
     "ai": "latest",
     "@prisma/client": "latest"
   },
