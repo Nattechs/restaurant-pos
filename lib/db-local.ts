@@ -277,7 +277,7 @@ export async function seedDemoData() {
 }
 
 // Export a redis-like object for compatibility
-export const redis = {\
+export const redis = {
 get: async <T>(key: string): Promise<T | null> => {
   if (key === 'menu:items') {
     return db.getMenuItems() as unknown as T
