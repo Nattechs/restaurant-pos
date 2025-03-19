@@ -209,7 +209,7 @@ class LocalDatabase {
       { id: "table1", number: "1", capacity: 4, status: "available" },
       { id: "table2", number: "2", capacity: 2, status: "available" },
       { id: "table3", number: "3", capacity: 6, status: "available" },
-      { id: "table4", number: "4", capacity: 4, status: "occupied" },
+      { id: "table4", number: "4", capacity: "occupied" },
     ]
 
     // Seed staff
@@ -227,15 +227,15 @@ class LocalDatabase {
 export const db = new LocalDatabase()
 
 // Export functions that match the Redis interface for easy swapping
-export async function getMenuItems(): Promise<MenuItem[]> {
+export async function getMenuItemsDB(): Promise<MenuItem[]> {
   return db.getMenuItems()
 }
 
-export async function getCategories(): Promise<Category[]> {
+export async function getCategoriesDB(): Promise<Category[]> {
   return db.getCategories()
 }
 
-export async function getOrders(status?: Order["status"]): Promise<Order[]> {
+export async function getOrdersDB(status?: Order["status"]): Promise<Order[]> {
   return db.getOrders(status)
 }
 
@@ -278,22 +278,22 @@ export async function seedDemoData() {
 
 // Export a redis-like object for compatibility
 export const redis = {\
-  get: async <T>(key: string): Promise<T | null> => {
-    if (key === 'menu:items') {
-      return db.getMenuItems() as unknown as T
-    } else if (key === 'menu:categories') {
-      return db.getCategories() as unknown as T
-    } else if (key === 'orders') {
-      return db.getOrders() as unknown as T
-    } else if (key === 'tables') {
-      return db.getTables() as unknown as T
-    } else if (key === 'staff') {
-      return db.getStaff() as unknown as T
-    }
-    return null
-  },
-  set: redisSet,
-  exists: redisExists
+get: async <T>(key: string): Promise<T | null> => {
+  if (key === 'menu:items') {
+    return db.getMenuItems() as unknown as T
+  } else if (key === 'menu:categories') {
+    return db.getCategories() as unknown as T
+  } else if (key === 'orders') {
+    return db.getOrders() as unknown as T
+  } else if (key === 'tables') {
+    return db.getTables() as unknown as T
+  } else if (key === 'staff') {
+    return db.getStaff() as unknown as T
+  }
+  return null
+},
+set: redisSet,
+exists: redisExists
 }
 
 import { generateId } from "ai"
@@ -452,7 +452,6 @@ export function initializeLocalStorage(): void {
   }
 }
 
-// Data access functions
 export function getMenuItems(): MenuItemLS[] {
   return getFromLocalStorage<MenuItemLS[]>("menu:items", [])
 }
@@ -465,11 +464,11 @@ export function getOrders(): OrderLS[] {
   return getFromLocalStorage<OrderLS[]>("orders", [])
 }
 
-export function getTables(): TableLS[] {
+export function getTablesLS(): TableLS[] {
   return getFromLocalStorage<TableLS[]>("tables", [])
 }
 
-export function getStaff(): StaffLS[] {
+export function getStaffLS(): StaffLS[] {
   return getFromLocalStorage<StaffLS[]>("staff", [])
 }
 
@@ -503,7 +502,7 @@ export function addOrder(order: OrderLS): void {
 
   // Update table status if it's a dine-in order
   if (order.diningMode === "Dine in") {
-    const tables = getTables()
+    const tables = getTablesLS()
     const tableIndex = tables.findIndex((t) => t.number === order.tableNumber)
 
     if (tableIndex !== -1) {
@@ -524,7 +523,7 @@ export function updateOrder(id: string, updates: Partial<OrderLS>): void {
 
     // If order is completed/paid and was dine-in, free up the table
     if ((updates.status === "paid" || updates.status === "cancelled") && orders[index].diningMode === "Dine in") {
-      const tables = getTables()
+      const tables = getTablesLS()
       const tableIndex = tables.findIndex((t) => t.number === orders[index].tableNumber)
 
       if (tableIndex !== -1) {
